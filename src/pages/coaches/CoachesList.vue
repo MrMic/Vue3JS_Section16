@@ -3,14 +3,11 @@
   <section>
     <div class="controls">
       <button>Refresh</button>
-      <router-link to="/register">
-        Register as Coach
-      </router-link>
+      <router-link to="/register"> Register as Coach </router-link>
     </div>
     <ul v-if="hasCoaches">
-      <li v-for="coach in filteredCoaches" :key="coach.id">
-        {{ coach.firstName }} {{ coach.lastName }}
-      </li>
+      <coach-item v-for="coach in filteredCoaches" :id="coach.id" :key="coach.id" :first-name="coach.firstName"
+        :last-name="coach.lastName" :rate="coach.hourlyRate" :areas="coach.areas" />
     </ul>
     <h3 v-else>No coaches found.</h3>
   </section>
@@ -18,7 +15,12 @@
 
 <!-- ______________________________________________________________________ -->
 <script>
+import CoachItem from '../../components/coaches/CoachItem.vue'
+
 export default {
+  components: {
+    CoachItem
+  },
   computed: {
     filteredCoaches() {
       return this.$store.getters['coaches/allCoaches']
@@ -31,4 +33,15 @@ export default {
 </script>
 
 <!-- ______________________________________________________________________ -->
-<style></style>
+<style scoped>
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.controls {
+  display: flex;
+  justify-content: space-between;
+}
+</style>
