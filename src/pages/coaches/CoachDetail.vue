@@ -16,9 +16,7 @@
   </section>
   <section>
     <base-card>
-      <base-badge v-for="area in areas" :key="area" :type="area" :title="area">
-        {{ areas.join(', ') }}
-      </base-badge>
+      <base-badge v-for="area in areas" :key="area" :type="area" :title="area" />
       <p>{{ description }}</p>
     </base-card>
   </section>
@@ -31,29 +29,29 @@ export default {
   data() {
     return {
       selectedCoach: null
-    }
+    };
   },
   computed: {
     fullName() {
-      return this.selectedCoach.firstName + ' ' + this.selectedCoach.lastName
+      return this.selectedCoach.firstName + ' ' + this.selectedCoach.lastName;
     },
     areas() {
-      return this.selectedCoach.areas
+      return this.selectedCoach.areas;
     },
     rate() {
-      return this.selectedCoach.hourlyRate
+      return this.selectedCoach.hourlyRate;
     },
     description() {
-      return this.selectedCoach.description
+      return this.selectedCoach.description;
     },
     contactLink() {
-      return this.$route.path + '/' + this.id + '/contact'
+      return this.$route.path + '/' + this.id + '/contact';
     }
   },
   created() {
-    this.selectedCoach = this.$store.getters['coaches/coaches'].find(
+    this.selectedCoach = this.$store.getters['coaches/allCoaches'].find(
       coach => coach.id === this.id
-    )
+    );
   }
-}
+};
 </script>
