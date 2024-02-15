@@ -1,63 +1,119 @@
 <template>
   <form @submit.prevent="submitForm">
-    <div class="form-control">
+    <div class="form-control" :class="{ invalid: !firstName.isValid }">
       <label for="firstname">First Name</label>
-      <input id="firstname" v-model.trim="firstName" type="text">
+      <input id="firstname" v-model.trim="firstName.val" type="text" @blur="clearValidity('firstName')">
+      <p v-if="!firstName.isValid">
+        Please enter a valid first name.
+      </p>
     </div>
-    <div class="form-control">
+    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+    <div class="form-control" :class="{ invalid: !lastName.isValid }">
       <label for="lastname">Last Name</label>
-      <input id="lastname" v-model.trim="lastName" type="text">
+      <input id="lastname" v-model.trim="lastName.val" type="text" @blur="clearValidity('lastName')">
+      <p v-if="!lastName.isValid">
+        Please enter a valid last name.
+      </p>
     </div>
-    <div class="form-control">
+    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+    <div class="form-control" :class="{ invalid: !description.isValid }">
       <label for="description">Description</label>
-      <textarea id="description" v-model.trim="description" rows="5" />
+      <textarea id="description" v-model.trim="description.val" rows="5" @blur="clearValidity('description')" />
+      <p v-if="!description.isValid">
+        Please enter a valid description.
+      </p>
     </div>
-    <div class="form-control">
+    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+    <div class="form-control" :class="{ invalid: !rate.isValid }">
       <label for="rate">Hourly Rate</label>
-      <input id="rate" v-model.number="rate" type="number">
+      <input id="rate" v-model.number="rate.val" type="number" @blur="clearValidity('rate')">
+      <p v-if="!rate.isValid">
+        Please enter a valid rate.
+      </p>
     </div>
-    <div class="form-control">
+    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+    <div class="form-control" :class="{ invalid: !areas.isValid }">
       <h3>Areas of Expertise</h3>
       <div>
-        <input id="frontend" v-model="areas" type="checkbox" value="frontend">
+        <input id="frontend" v-model="areas.val" type="checkbox" value="frontend" @blur="clearValidity('areas')">
         <label for="frontend">Frontend Development</label>
       </div>
       <div>
-        <input id="backend" v-model="areas" type="checkbox" value="backend">
+        <input id="backend" v-model="areas.val" type="checkbox" value="backend" @blur="clearValidity('areas')">
         <label for="backend">Backend Development</label>
       </div>
       <div>
-        <input id="career" v-model="areas" type="checkbox" value="career">
+        <input id="career" v-model="areas.val" type="checkbox" value="career" @blur="clearValidity('areas')">
         <label for="career">Career Advisory</label>
       </div>
+      <p v-if="!areas.isValid">
+        Please select at least one area of expertise.
+      </p>
     </div>
+    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+    <p v-if="!formIsValid">
+      Please fix the above errors and submit again.
+    </p>
     <base-button type="submit">
       Register
     </base-button>
   </form>
 </template>
 
-<!-- ______________________________________________________________________ -->
+<!-- ══════════════════════════════════════════════════════════════════════ -->
 <script>
 export default {
   emits: ['save-data'],
   data() {
     return {
-      firstName: '',
-      lastName: '',
-      description: '',
-      rate: null,
-      areas: []
+      firstName: { val: '', isValid: true },
+      lastName: { val: '', isValid: true },
+      description: { val: '', isValid: true },
+      rate: { val: null, isValid: true },
+      areas: { val: [], isValid: true },
+      formIsValid: true
     };
   },
   methods: {
+    clearValidity(input) {
+      this[input].isValid = true;
+    },
+    validateForm() {
+      this.formIsValid = true;
+      if (this.firstName.val === '') {
+        this.firstName.isValid = false;
+        this.formIsValid = false;
+      }
+      if (this.lastName.val === '') {
+        this.lastName.isValid = false;
+        this.formIsValid = false;
+      }
+      if (this.description.val === '') {
+        this.description.isValid = false;
+        this.formIsValid = false;
+      }
+      if (!this.rate.val || this.rate.val < 0) {
+        this.rate.isValid = false;
+        this.formIsValid = false;
+      }
+      if (this.areas.val.length === 0) {
+        this.areas.isValid = false;
+        this.formIsValid = false;
+      }
+    },
     submitForm() {
+      this.validateForm();
+
+      if (!this.formIsValid) {
+        return;
+      }
+
       const formData = {
-        first: this.firstName,
-        last: this.lastName,
-        desc: this.description,
-        rate: this.rate,
-        areas: this.areas
+        first: this.firstName.val,
+        last: this.lastName.val,
+        desc: this.description.val,
+        rate: this.rate.val,
+        areas: this.areas.val
       };
 
       this.$emit('save-data', formData);
@@ -66,7 +122,7 @@ export default {
 };
 </script>
 
-<!-- ______________________________________________________________________ -->
+<!-- ══════════════════════════════════════════════════════════════════════ -->
 <style scoped>
 .form-control {
   margin: 0.5rem 0;
