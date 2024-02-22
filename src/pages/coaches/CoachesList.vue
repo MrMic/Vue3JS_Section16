@@ -3,20 +3,19 @@
   <section>
     <base-card>
       <div class="controls">
-        <base-button mode="outline" @click="loadCoaches">
-          Refresh
-        </base-button>
-        <base-button v-if="!isCoach" link to="/register">
+        <base-button mode="outline" @click="loadCoaches"> Refresh </base-button>
+        <base-button v-if="!isCoach && !isLoading" link to="/register">
           Register as Coach
         </base-button>
       </div>
-      <ul v-if="hasCoaches">
+      <div v-if="isLoading">
+        <base-spinner />
+      </div>
+      <ul v-else-if="hasCoaches">
         <coach-item v-for="coach in filteredCoaches" :id="coach.id" :key="coach.id" :first-name="coach.firstName"
           :last-name="coach.lastName" :rate="coach.hourlyRate" :areas="coach.areas" />
       </ul>
-      <h3 v-else>
-        No coaches found.
-      </h3>
+      <h3 v-else>No coaches found.</h3>
     </base-card>
   </section>
 </template>
@@ -33,6 +32,7 @@ export default {
   },
   data() {
     return {
+      isLoading: false,
       activeFilters: {
         frontend: true,
         backend: true,
@@ -57,7 +57,7 @@ export default {
       });
     },
     hasCoaches() {
-      return this.$store.getters['coaches/hasCoaches'];
+      return !this.isLoading && this.$store.getters['coaches/hasCoaches'];
     },
     isCoach() {
       return this.$store.getters['coaches/isCoach'];
@@ -71,7 +71,9 @@ export default {
       this.activeFilters = updatedFilter;
     },
     async loadCoaches() {
+      this.isLoading = true;
       await this.$store.dispatch('coaches/loadCoaches');
+      this.isLoading = false;
     }
   }
 };
