@@ -1,4 +1,5 @@
 export default {
+  // ______________________________________________________________________
   async registerCoach(context, data) {
     const userId = context.rootGetters.userId;
     const coachData = {
@@ -29,7 +30,12 @@ export default {
     });
   },
 
-  async loadCoaches(context, _payload) {
+  // ______________________________________________________________________
+  async loadCoaches(context, payload) {
+    if (!payload.forceRefresh && !context.getters.shouldUpdate) {
+      return;
+    }
+
     const response = await fetch(
       `https://vue-http-demo-56d45-default-rtdb.europe-west1.firebasedatabase.app/coaches.json`
     );
@@ -54,5 +60,6 @@ export default {
     }
 
     context.commit('setCoaches', coaches);
+    context.commit('setFetchTimestamp');
   }
 };
