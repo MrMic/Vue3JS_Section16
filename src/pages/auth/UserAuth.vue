@@ -3,20 +3,22 @@
     <form @submit.prevent="submitForm">
       <div class="form-control">
         <label for="email"> E-Mail</label>
-        <input id="email" v-model.trim="email" type="email">
+        <input id="email" v-model.trim="email" type="email" />
       </div>
       <div class="form-control">
         <label for="password"> Password</label>
-        <input id="password" v-model.trim="password" type="password">
+        <input id="password" v-model.trim="password" type="password" />
       </div>
       <!--  _______________________________ ERROR _____________________________  -->
       <p v-if="!formIsValid">
         Please enter a valid email and password (must be at least 6 characters
-        long)>
+        long)
       </p>
       <!-- ______________________________________________________________________ -->
       <base-button>{{ submitButtonCaption }}</base-button>
-      <base-button type="button" mode="flat" @click="switchAuthMode">{{ switchModeButtonCaption }}</base-button>
+      <base-button type="button" mode="flat" @click="switchAuthMode">
+        {{ switchModeButtonCaption }}
+      </base-button>
     </form>
   </base-card>
 </template>
@@ -59,10 +61,15 @@ export default {
         this.formIsValid = false;
         return;
       }
-      this.$store.dispatch('login', {
-        email: this.email,
-        password: this.password
-      });
+
+      if (this.mode === 'login') {
+        // TODO: Send http request to login users
+      } else {
+        this.$store.dispatch('signup', {
+          email: this.email,
+          password: this.password
+        });
+      }
     },
     switchAuthMode() {
       if (this.mode === 'login') {
