@@ -1,18 +1,18 @@
 export default {
   // ______________________________________________________________________
-  login(context, payload) { },
+  login(context, payload) {},
 
   // ______________________________________________________________________
   async signup(context, payload) {
     const response = await fetch(
-      'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyATH72cUHOA7P0CRfEBZlI6Dh6gVpAshT0',
+      `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${process.env.VUE_APP_FIREBASE_API_KEY}`,
       {
         method: 'POST',
         body: JSON.stringify({
           email: payload.email,
           password: payload.password,
           returnSecureToken: true
-        }),
+        })
       }
     );
     const responseData = await response.json();
@@ -31,5 +31,5 @@ export default {
       tokenExpiration: responseData.expiresIn
     });
   },
-  logout(context) { }
+  logout(context) {}
 };
