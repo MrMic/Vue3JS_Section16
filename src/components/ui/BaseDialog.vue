@@ -1,8 +1,15 @@
 <template>
   <teleport to="body">
-    <div v-if="show" class="backdrop" @click="tryClose" />
+    <div
+      v-if="show"
+      class="backdrop"
+      @click="tryClose"
+    />
     <transition name="dialog">
-      <dialog v-if="show" open>
+      <dialog
+        v-if="show"
+        open
+      >
         <header>
           <slot name="header">
             <h2>{{ title }}</h2>
