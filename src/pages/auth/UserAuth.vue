@@ -1,36 +1,20 @@
 <template>
   <div>
-    <base-dialog
-      :show="!!error"
-      title="An error occurred"
-      @close="handleError"
-    >
+    <base-dialog :show="!!error" title="An error occurred" @close="handleError">
       <p>{{ error }}</p>
     </base-dialog>
-    <base-dialog
-      :show="isLoading"
-      title="Authenticating..."
-      fixed
-    >
+    <base-dialog :show="isLoading" title="Authenticating..." fixed>
       <base-spinner />
     </base-dialog>
     <base-card>
       <form @submit.prevent="submitForm">
         <div class="form-control">
           <label for="email"> E-Mail</label>
-          <input
-            id="email"
-            v-model.trim="email"
-            type="email"
-          >
+          <input id="email" v-model.trim="email" type="email" />
         </div>
         <div class="form-control">
           <label for="password"> Password</label>
-          <input
-            id="password"
-            v-model.trim="password"
-            type="password"
-          >
+          <input id="password" v-model.trim="password" type="password" />
         </div>
         <!--  _______________________________ ERROR _____________________________  -->
         <p v-if="!formIsValid">
@@ -39,11 +23,7 @@
         </p>
         <!-- ______________________________________________________________________ -->
         <base-button>{{ submitButtonCaption }}</base-button>
-        <base-button
-          type="button"
-          mode="flat"
-          @click="switchAuthMode"
-        >
+        <base-button type="button" mode="flat" @click="switchAuthMode">
           {{ switchModeButtonCaption }}
         </base-button>
       </form>
@@ -108,6 +88,9 @@ export default {
           // ______________________________ SIGNUP ____________________________
           await this.$store.dispatch('signup', actionPayload);
         }
+
+        const redirectUrl = '/' + (this.$route.query.redirect || 'coaches');
+        this.$router.replace(redirectUrl);
       } catch (error) {
         this.error = error.message || 'Failed to authenticate, try later.';
       }
